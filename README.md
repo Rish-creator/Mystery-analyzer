@@ -1,4 +1,4 @@
-# Mystery-analyzer
+<img width="558" height="88" alt="image" src="https://github.com/user-attachments/assets/68c25632-e8bd-4a43-9a84-9012d8abb2d9" /># Mystery-analyzer
 AI-powered web app that analyzes mystery novel manuscripts for plot holes, character consistency, and pacing — built while writing my own thriller set in Hyderabad.
 # Mystery Plot Analyzer
 
@@ -19,3 +19,6 @@ writing sessions without waiting for a human reader.
 ## Tech
 HTML, CSS, JavaScript, Vercel serverless functions, 
 Google Gemini API
+
+## Live demo
+mystery-analyzer.vercel.app
