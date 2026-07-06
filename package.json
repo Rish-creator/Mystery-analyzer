@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "AI-powered mystery fiction plot analyzer — built by a novelist who codes",
   "private": true,
+  "type": "module",
   "engines": {
     "node": "24.x"
   }
