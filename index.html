@@ -1,535 +1,741 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pattern Zero Lab — Mystery Plot Analyzer</title>
-  <meta name="description" content="AI-powered forensic analysis for mystery and thriller fiction. Paste a chapter and get a breakdown of plot holes, character consistency, tension, and pacing." />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Pattern Zero Lab</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap');
 
-    :root {
-      --bg: #f8f7f5;
-      --surface: #ffffff;
-      --surface-muted: #f1f0ee;
-      --border: #e4e2de;
-      --border-strong: #ccc9c3;
-      --text-primary: #1a1917;
-      --text-secondary: #5c5a56;
-      --text-muted: #9c9a96;
-      --accent: #4f3ff0;
-      --accent-bg: #eeecff;
-      --accent-text: #3228b5;
-      --red: #c0392b;
-      --red-bg: #fdf0ef;
-      --red-text: #9b2b20;
-      --green: #1a7f4b;
-      --green-bg: #edf7f1;
-      --green-text: #155e38;
-      --amber: #b45309;
-      --amber-bg: #fef9ec;
-      --amber-text: #92420a;
-      --blue: #1d5fa8;
-      --blue-bg: #eef4fd;
-      --blue-text: #174d8f;
-      --purple: #6b3fbd;
-      --purple-bg: #f4effe;
-      --purple-text: #542f9c;
-      --radius: 8px;
-      --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
-    }
+        :root {
+            --bg-color: #0f0e0d;
+            --surface-color: #1a1918;
+            --surface-light: #242220;
+            --text-main: #d4d4d4;
+            --text-offwhite: #f5f3ee;
+            --amber: #c8860a;
+            --steel-blue: #4a7fa5;
+            --crimson: #8b0000;
+            --red-bright: #ff3333;
+            --green: #2e8b57;
+            --font-mono: 'JetBrains Mono', monospace;
+            --font-sans: 'Inter', sans-serif;
+        }
 
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --bg: #141312;
-        --surface: #1e1d1b;
-        --surface-muted: #252422;
-        --border: #2e2c29;
-        --border-strong: #3d3b37;
-        --text-primary: #f0ede8;
-        --text-secondary: #a09d98;
-        --text-muted: #6b6864;
-        --accent: #7b6ef6;
-        --accent-bg: #1e1a3f;
-        --accent-text: #a89ff9;
-        --red: #e87060;
-        --red-bg: #2a1714;
-        --red-text: #f0897c;
-        --green: #3dba72;
-        --green-bg: #0f2419;
-        --green-text: #5dcf8a;
-        --amber: #e8a535;
-        --amber-bg: #271c0a;
-        --amber-text: #f0bc5e;
-        --blue: #5b9de0;
-        --blue-bg: #0d1e33;
-        --blue-text: #79b4f0;
-        --purple: #a07ef0;
-        --purple-bg: #1c1030;
-        --purple-text: #c09cf8;
-      }
-    }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    html { font-size: 16px; -webkit-font-smoothing: antialiased; }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
 
-    body {
-      background: var(--bg);
-      color: var(--text-primary);
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
-      line-height: 1.6;
-      min-height: 100vh;
-    }
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            background-image: url('data:image/svg+xml;utf8,<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.04"/></svg>');
+            z-index: 9999;
+        }
 
-    .page-wrap {
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 3rem 1.5rem 6rem;
-    }
+        .tape-header {
+            height: 4px;
+            width: 100%;
+            background: repeating-linear-gradient(45deg, var(--bg-color), var(--bg-color) 10px, var(--crimson) 10px, var(--crimson) 20px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    /* ── Header ── */
-    .site-header { margin-bottom: 3rem; }
-    .eyebrow {
-      font-size: 11px;
-      letter-spacing: 0.14em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 600;
-      margin-bottom: 10px;
-    }
-    .site-title {
-      font-size: 32px;
-      font-weight: 600;
-      color: var(--text-primary);
-      letter-spacing: -0.02em;
-      line-height: 1.2;
-      margin-bottom: 10px;
-    }
-    .site-desc {
-      font-size: 16px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      max-width: 520px;
-    }
+        .app-container {
+            display: flex;
+            flex-grow: 1;
+            max-width: 1400px;
+            margin: 0 auto;
+            width: 100%;
+            padding-bottom: 40px;
+        }
 
-    /* ── Divider ── */
-    .divider {
-      height: 1px;
-      background: var(--border);
-      margin: 2rem 0;
-    }
+        /* ── Sidebar ── */
+        aside {
+            width: 220px;
+            flex-shrink: 0;
+            border-right: 1px solid #333;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            position: sticky;
+            top: 4px;
+            height: calc(100vh - 4px);
+            overflow-y: auto;
+        }
 
-    /* ── Input area ── */
-    .input-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-secondary);
-      margin-bottom: 8px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    #word-count {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-    }
-    textarea {
-      width: 100%;
-      min-height: 240px;
-      resize: vertical;
-      padding: 14px 16px;
-      font-size: 15px;
-      line-height: 1.7;
-      font-family: inherit;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      color: var(--text-primary);
-      transition: border-color 0.15s, box-shadow 0.15s;
-      box-shadow: var(--shadow);
-    }
-    textarea:focus {
-      outline: none;
-      border-color: var(--accent);
-      box-shadow: 0 0 0 3px var(--accent-bg);
-    }
-    textarea::placeholder { color: var(--text-muted); }
-    .input-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
+        .logo-box { display: flex; flex-direction: column; gap: 0.5rem; }
+        .logo-mark { font-family: var(--font-mono); color: var(--amber); font-size: 2rem; font-weight: 700; line-height: 1; }
+        .case-number { font-family: var(--font-mono); color: var(--steel-blue); font-size: 0.75rem; letter-spacing: 1px; }
 
-    /* ── Controls ── */
-    .controls {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 14px;
-      flex-wrap: wrap;
-    }
-    .btn-analyze {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 22px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
-      font-family: inherit;
-    }
-    .btn-analyze:hover:not(:disabled) { opacity: 0.88; }
-    .btn-analyze:active:not(:disabled) { transform: scale(0.98); }
-    .btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-clear {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 10px 16px;
-      background: transparent;
-      color: var(--text-secondary);
-      border: 1px solid var(--border);
-      border-radius: var(--radius);
-      font-size: 14px;
-      cursor: pointer;
-      font-family: inherit;
-      transition: background 0.15s;
-    }
-    .btn-clear:hover { background: var(--surface-muted); }
-    .status-msg {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-left: 4px;
-    }
+        .nav-menu { display: flex; flex-direction: column; gap: 0.75rem; list-style: none; }
+        .nav-menu li {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            letter-spacing: 1px;
+            color: #666;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 6px 0;
+        }
+        .nav-menu li.active, .nav-menu li:hover { color: var(--text-main); }
+        .nav-menu li.active::before { content: "> "; color: var(--amber); }
 
-    /* ── Spinner ── */
-    .spinner {
-      width: 14px;
-      height: 14px;
-      border: 2px solid rgba(255,255,255,0.4);
-      border-top-color: #fff;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      flex-shrink: 0;
-    }
-    @keyframes spin { to { transform: rotate(360deg); } }
+        /* History entries in sidebar */
+        .history-section-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #555;
+            letter-spacing: 2px;
+            margin-top: 0.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #2a2a2a;
+        }
 
-    /* ── Results ── */
-    #results { margin-top: 2.5rem; }
+        .history-entry {
+            background: var(--surface-color);
+            border: 1px solid #2a2a2a;
+            padding: 8px 10px;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            margin-top: 6px;
+        }
+        .history-entry:hover { border-color: var(--amber); }
+        .history-entry-id { font-family: var(--font-mono); font-size: 0.68rem; color: var(--amber); }
+        .history-entry-date { font-family: var(--font-mono); font-size: 0.65rem; color: #555; margin-top: 2px; }
+        .history-entry-preview { font-size: 0.75rem; color: #777; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .history-empty { font-family: var(--font-mono); font-size: 0.7rem; color: #444; margin-top: 8px; }
 
-    .overall-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 20px 24px;
-      box-shadow: var(--shadow);
-      margin-bottom: 12px;
-    }
-    .overall-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-      color: var(--text-muted);
-      font-weight: 600;
-      margin-bottom: 8px;
-    }
-    .overall-text {
-      font-size: 15px;
-      color: var(--text-primary);
-      line-height: 1.7;
-    }
-    .scores-row {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-top: 14px;
-      padding-top: 14px;
-      border-top: 1px solid var(--border);
-    }
-    .score-chip {
-      font-size: 12px;
-      font-weight: 600;
-      padding: 4px 11px;
-      border-radius: 20px;
-    }
-    .chip-green { background: var(--green-bg); color: var(--green-text); }
-    .chip-blue  { background: var(--blue-bg);  color: var(--blue-text);  }
-    .chip-amber { background: var(--amber-bg); color: var(--amber-text); }
-    .chip-red   { background: var(--red-bg);   color: var(--red-text);   }
+        .settings-box {
+            margin-top: auto;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: #666;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+        .settings-box input[type="checkbox"] { accent-color: var(--amber); cursor: pointer; }
 
-    .section-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      margin-bottom: 12px;
-    }
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 13px 20px;
-      border-bottom: 1px solid var(--border);
-    }
-    .section-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 7px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13px;
-      font-weight: 700;
-      flex-shrink: 0;
-    }
-    .icon-green  { background: var(--green-bg);  color: var(--green);  }
-    .icon-red    { background: var(--red-bg);    color: var(--red);    }
-    .icon-blue   { background: var(--blue-bg);   color: var(--blue);   }
-    .icon-amber  { background: var(--amber-bg);  color: var(--amber);  }
-    .icon-purple { background: var(--purple-bg); color: var(--purple); }
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-    }
-    .section-count {
-      margin-left: auto;
-      font-size: 12px;
-      color: var(--text-muted);
-      background: var(--surface-muted);
-      border: 1px solid var(--border);
-      padding: 2px 9px;
-      border-radius: 10px;
-    }
-    .finding {
-      display: flex;
-      gap: 14px;
-      padding: 14px 20px;
-      border-bottom: 1px solid var(--border);
-      align-items: flex-start;
-    }
-    .finding:last-child { border-bottom: none; }
-    .finding-num {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-variant-numeric: tabular-nums;
-      min-width: 22px;
-      padding-top: 3px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
-    .finding-body { flex: 1; }
-    .finding-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 3px;
-    }
-    .finding-detail {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-    }
+        /* ── Main ── */
+        main { flex-grow: 1; padding: 3rem 4rem; max-width: 1000px; }
 
-    /* ── Error ── */
-    .error-box {
-      background: var(--red-bg);
-      border: 1px solid var(--red);
-      border-radius: var(--radius);
-      padding: 14px 18px;
-      color: var(--red-text);
-      font-size: 14px;
-      line-height: 1.5;
-    }
-    .error-box strong { display: block; margin-bottom: 4px; }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--amber);
+            padding-bottom: 1rem;
+        }
 
-    /* ── Footer ── */
-    .site-footer {
-      margin-top: 5rem;
-      padding-top: 1.5rem;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-    .footer-credit { line-height: 1.6; }
-    .footer-badge {
-      font-size: 11px;
-      padding: 3px 10px;
-      background: var(--accent-bg);
-      color: var(--accent-text);
-      border-radius: 20px;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-    }
+        h1 { font-family: var(--font-sans); font-weight: 600; letter-spacing: 4px; font-size: 1.5rem; color: var(--text-main); }
 
-    /* ── Responsive ── */
-    @media (max-width: 540px) {
-      .page-wrap { padding: 2rem 1.1rem 4rem; }
-      .site-title { font-size: 26px; }
-      .controls { flex-direction: column; align-items: flex-start; }
-    }
-  </style>
+        .status-indicator { display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--steel-blue); }
+        .blink-dot { width: 8px; height: 8px; background-color: var(--red-bright); border-radius: 50%; box-shadow: 0 0 8px var(--red-bright); }
+        .blink-dot.active { animation: blink 1.5s infinite; }
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* ── Views ── */
+        .view { display: none; }
+        .view.active { display: block; }
+
+        /* Tab label */
+        .view-label {
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: #555;
+            letter-spacing: 2px;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px dashed #2a2a2a;
+        }
+
+        /* ── Textarea / Editor ── */
+        .editor-container { position: relative; margin-bottom: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+
+        textarea {
+            width: 100%;
+            height: 380px;
+            background-color: var(--surface-color);
+            color: var(--text-offwhite);
+            font-family: var(--font-sans);
+            font-size: 1.05rem;
+            padding: 2rem 2.5rem;
+            border: 1px solid #333;
+            resize: vertical;
+            cursor: crosshair;
+            background-image: repeating-linear-gradient(transparent, transparent 31px, rgba(74, 127, 165, 0.15) 31px, rgba(74, 127, 165, 0.15) 32px);
+            background-attachment: local;
+            line-height: 32px;
+        }
+        textarea:focus { outline: none; border-color: var(--steel-blue); }
+
+        /* Compare view: two textareas side by side */
+        .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem; }
+        .compare-grid textarea { height: 300px; }
+        .draft-label { font-family: var(--font-mono); font-size: 0.75rem; color: var(--steel-blue); letter-spacing: 1px; margin-bottom: 6px; }
+
+        .editor-footer { display: flex; justify-content: space-between; align-items: center; margin-top: 1rem; }
+        .word-count { font-family: var(--font-mono); color: var(--steel-blue); font-size: 0.85rem; }
+        .actions { display: flex; gap: 1rem; }
+
+        .btn-clear { background: transparent; color: #888; border: 1px solid #444; padding: 0.75rem 1.5rem; font-family: var(--font-mono); font-size: 0.85rem; cursor: pointer; transition: all 0.2s; }
+        .btn-clear:hover { background: #222; color: var(--text-main); }
+
+        .btn-analyze { background-color: var(--amber); color: #000; border: none; padding: 0.75rem 2rem; font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; cursor: pointer; position: relative; overflow: hidden; transition: background 0.2s; border-radius: 0; }
+        .btn-analyze::after { content: ""; position: absolute; top: -50%; left: 0; width: 100%; height: 20%; background: rgba(255,255,255,0.4); box-shadow: 0 0 10px rgba(255,255,255,0.6); opacity: 0; pointer-events: none; }
+        .btn-analyze:hover::after { animation: scanline 1.2s infinite linear; opacity: 1; }
+        .btn-analyze:disabled { opacity: 0.5; cursor: not-allowed; }
+        @keyframes scanline { 0% { top: -20%; } 100% { top: 120%; } }
+
+        /* ── States ── */
+        .loading-state { display: none; text-align: center; padding: 4rem 0; font-family: var(--font-mono); color: var(--amber); letter-spacing: 2px; animation: pulseText 1.5s infinite; }
+        @keyframes pulseText { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+        .error-state { display: none; margin-top: 2rem; padding: 1rem 1.5rem; background: rgba(255,51,51,0.07); border-left: 3px solid var(--red-bright); font-family: var(--font-mono); font-size: 0.85rem; color: var(--red-bright); letter-spacing: 1px; }
+
+        /* ── Results ── */
+        #results-section { display: none; flex-direction: column; gap: 2rem; margin-top: 3rem; border-top: 1px dashed #333; padding-top: 3rem; }
+        #compare-results { display: none; flex-direction: column; gap: 2rem; margin-top: 3rem; border-top: 1px dashed #333; padding-top: 3rem; }
+        #history-results { margin-top: 1rem; }
+
+        .overall-summary { font-size: 1.1rem; line-height: 1.6; color: var(--text-offwhite); margin-bottom: 2rem; padding: 1.5rem; background: rgba(74,127,165,0.05); border-left: 3px solid var(--steel-blue); }
+
+        /* Score gauge */
+        .scores-panel { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 3rem; }
+        .score-row { background: var(--surface-color); padding: 1rem; border: 1px solid #333; }
+        .score-label { font-family: var(--font-mono); font-size: 0.8rem; color: #888; display: block; margin-bottom: 0.5rem; }
+        .score-gauge { height: 6px; background: #111; margin-bottom: 0.5rem; position: relative; overflow: hidden; }
+        .score-fill { height: 100%; background: var(--amber); width: 0%; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+        .score-value { font-family: var(--font-mono); font-size: 0.9rem; color: var(--text-main); font-weight: 700; }
+
+        /* Compare score change */
+        .compare-scores { display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem; margin-bottom: 2rem; }
+        .compare-score-box { background: var(--surface-color); padding: 1rem; border: 1px solid #333; text-align: center; }
+        .compare-score-key { font-family: var(--font-mono); font-size: 0.72rem; color: #888; letter-spacing: 1px; margin-bottom: 6px; }
+        .compare-score-val { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; }
+        .improved { color: var(--green); }
+        .same { color: var(--steel-blue); }
+        .weakened { color: var(--red-bright); }
+
+        /* Verdict banner */
+        .verdict-banner { padding: 1.25rem 1.5rem; border: 1px solid; margin-bottom: 2rem; }
+        .verdict-winner { font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 6px; }
+        .verdict-text { font-size: 1rem; line-height: 1.5; color: var(--text-offwhite); }
+        .verdict-advice { font-family: var(--font-mono); font-size: 0.82rem; color: var(--amber); margin-top: 10px; }
+
+        /* Evidence cards */
+        .evidence-card { background-color: var(--surface-color); color: var(--text-main); padding: 2.5rem 2rem 2rem; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.3); clip-path: polygon(0% 10px,2% 0px,4% 10px,6% 0px,8% 10px,10% 0px,12% 10px,14% 0px,16% 10px,18% 0px,20% 10px,22% 0px,24% 10px,26% 0px,28% 10px,30% 0px,32% 10px,34% 0px,36% 10px,38% 0px,40% 10px,42% 0px,44% 10px,46% 0px,48% 10px,50% 0px,52% 10px,54% 0px,56% 10px,58% 0px,60% 10px,62% 0px,64% 10px,66% 0px,68% 10px,70% 0px,72% 10px,74% 0px,76% 10px,78% 0px,80% 10px,82% 0px,84% 10px,86% 0px,88% 10px,90% 0px,92% 10px,94% 0px,96% 10px,98% 0px,100% 10px,100% 100%,0% 100%); opacity: 0; transform: translateY(20px); transition: opacity 0.5s ease, transform 0.5s ease; }
+        .evidence-card.visible { opacity: 1; transform: translateY(0); }
+
+        .card-header { font-family: var(--font-mono); font-size: 1.1rem; color: #fff; margin-bottom: 1.5rem; padding-bottom: 0.5rem; border-bottom: 1px solid #333; }
+
+        .exhibit-item { margin-bottom: 1.5rem; }
+        .exhibit-item:last-child { margin-bottom: 0; }
+        .exhibit-title { font-family: var(--font-mono); color: var(--red-bright); font-size: 0.9rem; margin-bottom: 0.5rem; }
+        .strength-title { color: var(--green); }
+        .advisory-title { color: var(--amber); }
+        .neutral-title { color: var(--steel-blue); }
+        .exhibit-detail { font-size: 0.95rem; line-height: 1.5; color: var(--text-offwhite); padding-left: 1rem; border-left: 1px solid #444; }
+
+        .stamp { position: absolute; top: 25px; right: 20px; border: 3px solid; padding: 4px 10px; font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 2px; transform: rotate(-10deg); opacity: 0.8; pointer-events: none; }
+        .stamp-critical { color: var(--red-bright); border-color: var(--red-bright); }
+        .stamp-advisory { color: var(--amber); border-color: var(--amber); }
+        .stamp-cleared { color: var(--green); border-color: var(--green); transform: rotate(5deg); }
+        .stamp-neutral { color: var(--steel-blue); border-color: var(--steel-blue); transform: rotate(-5deg); }
+
+        /* History view */
+        .history-case-card { background: var(--surface-color); border: 1px solid #2a2a2a; padding: 1.5rem 2rem; margin-bottom: 1.5rem; cursor: pointer; transition: border-color 0.2s; }
+        .history-case-card:hover { border-color: var(--amber); }
+        .history-case-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        .history-case-id { font-family: var(--font-mono); color: var(--amber); font-size: 0.85rem; }
+        .history-case-date { font-family: var(--font-mono); color: #555; font-size: 0.75rem; }
+        .history-case-preview { font-size: 0.9rem; color: #777; margin-bottom: 1rem; font-style: italic; }
+        .history-case-scores { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .history-score-chip { font-family: var(--font-mono); font-size: 0.72rem; padding: 3px 8px; border: 1px solid #333; }
+        .history-empty-state { font-family: var(--font-mono); color: #444; padding: 3rem 0; text-align: center; letter-spacing: 2px; }
+        .history-clear-btn { font-family: var(--font-mono); font-size: 0.75rem; color: #555; background: transparent; border: 1px solid #333; padding: 6px 12px; cursor: pointer; margin-bottom: 1.5rem; }
+        .history-clear-btn:hover { color: var(--red-bright); border-color: var(--red-bright); }
+
+        /* Expanded history result */
+        #history-expanded { margin-top: 2rem; border-top: 1px dashed #333; padding-top: 2rem; display: none; flex-direction: column; gap: 2rem; }
+        .back-btn { font-family: var(--font-mono); font-size: 0.78rem; color: var(--steel-blue); background: transparent; border: none; cursor: pointer; padding: 0; margin-bottom: 1rem; letter-spacing: 1px; }
+        .back-btn:hover { color: var(--amber); }
+
+        /* ── Ticker ── */
+        .ticker-wrap { position: fixed; bottom: 0; width: 100%; background-color: var(--amber); height: 24px; overflow: hidden; z-index: 100; }
+        .ticker { display: inline-block; white-space: nowrap; padding-top: 4px; font-family: var(--font-mono); font-size: 0.75rem; color: #000; font-weight: 700; animation: ticker 30s linear infinite; }
+        @keyframes ticker { 0% { transform: translate3d(0,0,0); } 100% { transform: translate3d(-50%,0,0); } }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .app-container { flex-direction: column; }
+            aside { width: 100%; height: auto; padding: 1rem; border-right: none; border-bottom: 1px solid #333; flex-direction: row; justify-content: space-between; align-items: center; position: relative; }
+            .nav-menu, .settings-box, .history-section-label, .history-entry { display: none; }
+            main { padding: 1.5rem; }
+            header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+            .actions { flex-direction: column; width: 100%; }
+            .actions button { width: 100%; }
+            .scores-panel { grid-template-columns: 1fr 1fr; }
+            .compare-grid { grid-template-columns: 1fr; }
+            .compare-scores { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
 </head>
 <body>
-  <div class="page-wrap">
+    <div class="tape-header"></div>
 
-    <header class="site-header">
-      <div class="eyebrow">Pattern Zero Lab</div>
-      <h1 class="site-title">Mystery Plot Analyzer</h1>
-      <p class="site-desc">Paste any chapter or scene from your mystery novel. Get a forensic editorial breakdown — plot holes, character consistency, tension, and pacing — powered by AI.</p>
-    </header>
+    <div class="app-container">
+        <aside>
+            <div class="logo-box">
+                <div class="logo-mark">PZ//</div>
+                <div class="case-number" id="case-id">CASE: #000000</div>
+            </div>
 
-    <div class="divider"></div>
+            <ul class="nav-menu" id="nav-menu">
+                <li class="active" data-view="analyze">ANALYZE</li>
+                <li data-view="compare">COMPARE DRAFTS</li>
+                <li data-view="history">CASE HISTORY</li>
+            </ul>
 
-    <section>
-      <div class="input-label">
-        <span>Your chapter or scene</span>
-        <span id="word-count">0 words</span>
-      </div>
-      <textarea
-        id="chapter-input"
-        placeholder="Paste your chapter here — even a single scene works well. The analyzer reads for plot holes, character voice inconsistencies, tension pacing, and structural issues..."
-        aria-label="Chapter text input"
-      ></textarea>
-      <div class="input-hint">Works best with 200–4,000 words. Short scenes welcome too.</div>
-      <div class="controls">
-        <button class="btn-analyze" id="analyze-btn" onclick="analyze()">
-          Analyze chapter
-        </button>
-        <button class="btn-clear" onclick="clearAll()">Clear</button>
-        <span class="status-msg" id="status-msg"></span>
-      </div>
-    </section>
+            <div class="history-section-label">RECENT CASES</div>
+            <div id="sidebar-history"></div>
 
-    <div id="results"></div>
+            <div class="settings-box">
+                <input type="checkbox" id="audio-toggle">
+                <label for="audio-toggle">Audio</label>
+            </div>
+        </aside>
 
-    <footer class="site-footer">
-      <div class="footer-credit">Built by a writer who codes — analyzing mystery fiction with AI.</div>
-      <div class="footer-badge">Powered by Claude</div>
-    </footer>
+        <main>
+            <header>
+                <h1>PATTERN ZERO LAB</h1>
+                <div class="status-indicator">
+                    <div class="blink-dot" id="status-dot"></div>
+                    <span id="status-text">SYSTEM READY</span>
+                </div>
+            </header>
 
-  </div>
+            <!-- ── VIEW: ANALYZE ── -->
+            <div class="view active" id="view-analyze">
+                <div class="view-label">// SINGLE CHAPTER ANALYSIS</div>
+                <div class="editor-container">
+                    <textarea id="chapter-input" placeholder="[PASTE MANUSCRIPT EVIDENCE HERE]"></textarea>
+                </div>
+                <div class="editor-footer">
+                    <div class="word-count">EVIDENCE: <span id="word-count">0</span> WORDS</div>
+                    <div class="actions">
+                        <button class="btn-clear" onclick="clearEvidence()">CLEAR FILE</button>
+                        <button class="btn-analyze" id="analyze-btn" onclick="analyze()">SUBMIT FOR ANALYSIS</button>
+                    </div>
+                </div>
+                <div id="loading-state" class="loading-state">[ ANALYZING EVIDENCE... ]</div>
+                <div id="error-state" class="error-state"></div>
+                <div id="results-section"></div>
+            </div>
 
-  <script>
-    const input   = document.getElementById('chapter-input');
-    const wcEl    = document.getElementById('word-count');
-    const btn     = document.getElementById('analyze-btn');
-    const statusEl = document.getElementById('status-msg');
-    const results = document.getElementById('results');
+            <!-- ── VIEW: COMPARE DRAFTS ── -->
+            <div class="view" id="view-compare">
+                <div class="view-label">// DRAFT COMPARISON — PASTE TWO VERSIONS OF THE SAME SCENE</div>
+                <div class="compare-grid">
+                    <div>
+                        <div class="draft-label">DRAFT 1 — ORIGINAL</div>
+                        <div class="editor-container">
+                            <textarea id="draft1-input" placeholder="[PASTE DRAFT 1 HERE]"></textarea>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="draft-label">DRAFT 2 — REVISED</div>
+                        <div class="editor-container">
+                            <textarea id="draft2-input" placeholder="[PASTE DRAFT 2 HERE]"></textarea>
+                        </div>
+                    </div>
+                </div>
+                <div class="actions" style="justify-content:flex-end; margin-bottom:1rem;">
+                    <button class="btn-clear" onclick="clearCompare()">CLEAR</button>
+                    <button class="btn-analyze" id="compare-btn" onclick="compareDrafts()">COMPARE DRAFTS</button>
+                </div>
+                <div id="compare-loading" class="loading-state">[ CROSS-REFERENCING EVIDENCE... ]</div>
+                <div id="compare-error" class="error-state"></div>
+                <div id="compare-results"></div>
+            </div>
 
-    input.addEventListener('input', () => {
-      const w = input.value.trim().split(/\s+/).filter(Boolean).length;
-      wcEl.textContent = w + ' word' + (w !== 1 ? 's' : '');
-    });
+            <!-- ── VIEW: HISTORY ── -->
+            <div class="view" id="view-history">
+                <div class="view-label">// CASE HISTORY — LAST 5 ANALYSES</div>
+                <div id="history-results"></div>
+                <div id="history-expanded"></div>
+            </div>
+        </main>
+    </div>
 
-    function clearAll() {
-      input.value = '';
-      wcEl.textContent = '0 words';
-      results.innerHTML = '';
-      statusEl.textContent = '';
-    }
+    <div class="ticker-wrap">
+        <div class="ticker">PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • DO NOT DISTRIBUTE • PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • DO NOT DISTRIBUTE • PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • </div>
+    </div>
 
-    function setLoading(on) {
-      btn.disabled = on;
-      btn.innerHTML = on
-        ? '<div class="spinner"></div> Analyzing...'
-        : 'Analyze chapter';
-      statusEl.textContent = on ? 'This takes about 10 seconds...' : '';
-    }
+    <script>
+        // ── Audio ──
+        let audioCtx;
+        function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+        function playTypewriterClick() {
+            if (!document.getElementById('audio-toggle').checked) return;
+            initAudio();
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(150 + Math.random() * 50, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+            osc.connect(gain); gain.connect(audioCtx.destination);
+            osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+        }
 
-    function scoreChip(label, val) {
-      const cls = val === 'Strong' ? 'chip-green'
-                : val === 'Good'   ? 'chip-blue'
-                : val === 'Fair'   ? 'chip-amber'
-                : 'chip-red';
-      return `<span class="score-chip ${cls}">${label}: ${val}</span>`;
-    }
+        // ── Refs ──
+        const textarea = document.getElementById('chapter-input');
+        const wordCountEl = document.getElementById('word-count');
+        const statusDot = document.getElementById('status-dot');
+        const statusText = document.getElementById('status-text');
+        let exhibitCounter = 1;
 
-    function renderSection(title, iconClass, symbol, items) {
-      if (!items || items.length === 0) return '';
-      const rows = items.map((it, i) => `
-        <div class="finding">
-          <div class="finding-num">${String(i + 1).padStart(2, '0')}</div>
-          <div class="finding-body">
-            <div class="finding-title">${it.title}</div>
-            <div class="finding-detail">${it.detail}</div>
-          </div>
-        </div>`).join('');
-      return `
-        <div class="section-card">
-          <div class="section-header">
-            <div class="section-icon ${iconClass}">${symbol}</div>
-            <div class="section-title">${title}</div>
-            <div class="section-count">${items.length}</div>
-          </div>
-          ${rows}
-        </div>`;
-    }
-
-    function renderResults(r) {
-      const s = r.scores || {};
-      results.innerHTML = `
-        <div class="overall-card">
-          <div class="overall-label">Overall assessment</div>
-          <div class="overall-text">${r.overall || ''}</div>
-          <div class="scores-row">
-            ${scoreChip('Plot', s.plot || '—')}
-            ${scoreChip('Characters', s.characters || '—')}
-            ${scoreChip('Tension', s.tension || '—')}
-            ${scoreChip('Pacing', s.pacing || '—')}
-          </div>
-        </div>
-        ${renderSection('Strengths to keep', 'icon-green', '✓', r.strengths)}
-        ${renderSection('Plot holes', 'icon-red', '!', r.plot_holes)}
-        ${renderSection('Character inconsistencies', 'icon-blue', '?', r.character_issues)}
-        ${renderSection('Tension improvements', 'icon-amber', '↑', r.tension_suggestions)}
-        ${renderSection('Pacing notes', 'icon-purple', '~', r.pacing_notes)}
-      `;
-      results.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-
-    async function analyze() {
-      const text = input.value.trim();
-      const words = text.split(/\s+/).filter(Boolean).length;
-      if (!text || words < 50) {
-        statusEl.textContent = 'Add at least 50 words to analyze.';
-        return;
-      }
-
-      setLoading(true);
-      results.innerHTML = '';
-
-      try {
-        const res = await fetch('/api/analyze', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text })
+        // ── Init ──
+        document.getElementById('case-id').innerText = `CASE: #${Math.floor(Math.random() * 900000 + 100000)}`;
+        textarea.addEventListener('input', () => {
+            const w = textarea.value.trim().split(/\s+/).filter(Boolean).length;
+            wordCountEl.innerText = w;
         });
 
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Request failed');
-        renderResults(data);
-      } catch (err) {
-        results.innerHTML = `
-          <div class="error-box">
-            <strong>Something went wrong.</strong>
-            ${err.message || 'Try again in a moment.'}
-          </div>`;
-      } finally {
-        setLoading(false);
-      }
-    }
-  </script>
+        // ── Navigation ──
+        document.getElementById('nav-menu').addEventListener('click', e => {
+            const li = e.target.closest('li');
+            if (!li) return;
+            const view = li.dataset.view;
+            document.querySelectorAll('.nav-menu li').forEach(el => el.classList.remove('active'));
+            li.classList.add('active');
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-' + view).classList.add('active');
+            if (view === 'history') renderHistoryView();
+        });
+
+        // Sidebar history entries also navigate
+        document.getElementById('sidebar-history').addEventListener('click', e => {
+            const entry = e.target.closest('.history-entry');
+            if (!entry) return;
+            const id = entry.dataset.id;
+            switchToHistoryAndExpand(id);
+        });
+
+        function switchToHistoryAndExpand(id) {
+            document.querySelectorAll('.nav-menu li').forEach(el => el.classList.remove('active'));
+            document.querySelector('[data-view="history"]').classList.add('active');
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.getElementById('view-history').classList.add('active');
+            renderHistoryView();
+            expandHistoryEntry(id);
+        }
+
+        // ── Local Storage History ──
+        const HISTORY_KEY = 'pzl_history';
+
+        function getHistory() {
+            try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]'); }
+            catch { return []; }
+        }
+
+        function saveToHistory(text, result) {
+            const history = getHistory();
+            const entry = {
+                id: `#${Math.floor(Math.random() * 900000 + 100000)}`,
+                date: new Date().toLocaleString('en-IN', { day:'2-digit', month:'short', hour:'2-digit', minute:'2-digit' }),
+                preview: text.trim().slice(0, 90) + '...',
+                wordCount: text.trim().split(/\s+/).filter(Boolean).length,
+                result
+            };
+            history.unshift(entry);
+            const trimmed = history.slice(0, 5);
+            localStorage.setItem(HISTORY_KEY, JSON.stringify(trimmed));
+            renderSidebarHistory();
+            return entry.id;
+        }
+
+        function renderSidebarHistory() {
+            const history = getHistory();
+            const container = document.getElementById('sidebar-history');
+            if (history.length === 0) {
+                container.innerHTML = '<div class="history-empty">NO PRIOR CASES</div>';
+                return;
+            }
+            container.innerHTML = history.map(e => `
+                <div class="history-entry" data-id="${e.id}">
+                    <div class="history-entry-id">${e.id}</div>
+                    <div class="history-entry-date">${e.date}</div>
+                    <div class="history-entry-preview">${e.preview}</div>
+                </div>`).join('');
+        }
+
+        function renderHistoryView() {
+            const history = getHistory();
+            const container = document.getElementById('history-results');
+            document.getElementById('history-expanded').style.display = 'none';
+            if (history.length === 0) {
+                container.innerHTML = '<div class="history-empty-state">[ NO PRIOR CASES ON FILE ]</div>';
+                return;
+            }
+            const scoreColor = v => v === 'Strong' ? 'color:var(--green)' : v === 'Good' ? 'color:var(--steel-blue)' : v === 'Fair' ? 'color:var(--amber)' : 'color:var(--red-bright)';
+            container.innerHTML = `<button class="history-clear-btn" onclick="clearHistory()">PURGE ALL RECORDS</button>` +
+                history.map(e => `
+                <div class="history-case-card" onclick="expandHistoryEntry('${e.id}')">
+                    <div class="history-case-header">
+                        <div class="history-case-id">CASE ${e.id}</div>
+                        <div class="history-case-date">${e.date} · ${e.wordCount} words</div>
+                    </div>
+                    <div class="history-case-preview">"${e.preview}"</div>
+                    <div class="history-case-scores">
+                        ${Object.entries(e.result.scores || {}).map(([k,v]) => `<div class="history-score-chip" style="${scoreColor(v)}">${k.toUpperCase()}: ${v}</div>`).join('')}
+                    </div>
+                </div>`).join('');
+        }
+
+        function expandHistoryEntry(id) {
+            const history = getHistory();
+            const entry = history.find(e => e.id === id);
+            if (!entry) return;
+            const expanded = document.getElementById('history-expanded');
+            expanded.innerHTML = `
+                <button class="back-btn" onclick="collapseHistoryEntry()">← BACK TO CASE LIST</button>
+                <div class="overall-summary">${entry.result.overall}</div>
+                <div class="scores-panel">${buildScoresHTML(entry.result.scores)}</div>
+                ${buildEvidenceCard('PLOT HOLES', entry.result.plot_holes, '', 'CRITICAL', 'stamp-critical')}
+                ${buildEvidenceCard('CHARACTER ISSUES', entry.result.character_issues, '', 'CRITICAL', 'stamp-critical')}
+                ${buildEvidenceCard('TENSION IMPROVEMENTS', entry.result.tension_suggestions, 'advisory-title', 'ADVISORY', 'stamp-advisory')}
+                ${buildEvidenceCard('PACING NOTES', entry.result.pacing_notes, 'advisory-title', 'ADVISORY', 'stamp-advisory')}
+                ${buildEvidenceCard('STRENGTHS', entry.result.strengths, 'strength-title', 'CLEARED', 'stamp-cleared')}
+            `;
+            expanded.style.display = 'flex';
+            document.getElementById('history-results').style.display = 'none';
+            setTimeout(() => {
+                expanded.querySelectorAll('.evidence-card').forEach((c,i) => setTimeout(() => c.classList.add('visible'), i * 200));
+                expanded.querySelectorAll('.score-fill').forEach(f => { f.style.width = f.dataset.width; });
+            }, 100);
+        }
+
+        function collapseHistoryEntry() {
+            document.getElementById('history-expanded').style.display = 'none';
+            document.getElementById('history-results').style.display = 'block';
+        }
+
+        function clearHistory() {
+            localStorage.removeItem(HISTORY_KEY);
+            renderSidebarHistory();
+            renderHistoryView();
+        }
+
+        // ── Clear functions ──
+        function clearEvidence() {
+            textarea.value = '';
+            wordCountEl.innerText = '0';
+            document.getElementById('results-section').innerHTML = '';
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('loading-state').style.display = 'none';
+            document.getElementById('error-state').style.display = 'none';
+            statusDot.classList.remove('active');
+            statusText.innerText = 'SYSTEM READY';
+        }
+
+        function clearCompare() {
+            document.getElementById('draft1-input').value = '';
+            document.getElementById('draft2-input').value = '';
+            document.getElementById('compare-results').innerHTML = '';
+            document.getElementById('compare-results').style.display = 'none';
+            document.getElementById('compare-loading').style.display = 'none';
+            document.getElementById('compare-error').style.display = 'none';
+        }
+
+        // ── Error helper ──
+        function showError(elId, msg) {
+            const el = document.getElementById(elId);
+            el.innerText = msg;
+            el.style.display = 'block';
+        }
+
+        // ── Score helpers ──
+        function getScorePerc(v) {
+            const s = (v || '').toLowerCase();
+            if (s === 'strong') return '100%';
+            if (s === 'good') return '75%';
+            if (s === 'fair') return '50%';
+            return '25%';
+        }
+        function getScoreColor(v) {
+            const s = (v || '').toLowerCase();
+            if (s === 'strong' || s === 'good') return 'var(--green)';
+            if (s === 'fair') return 'var(--amber)';
+            return 'var(--red-bright)';
+        }
+
+        function buildScoresHTML(scores) {
+            return Object.entries(scores || {}).map(([k,v]) => `
+                <div class="score-row">
+                    <span class="score-label">${k.toUpperCase()}</span>
+                    <div class="score-gauge"><div class="score-fill" data-width="${getScorePerc(v)}" style="background:${getScoreColor(v)};width:0%"></div></div>
+                    <span class="score-value">${v.toUpperCase()}</span>
+                </div>`).join('');
+        }
+
+        function getExhibit() { return `[EXHIBIT ${String(exhibitCounter++).padStart(2,'0')}]`; }
+
+        function buildEvidenceCard(title, items, titleClass, stamp, stampClass) {
+            if (!items || items.length === 0) return '';
+            return `<div class="evidence-card">
+                <div class="stamp ${stampClass}">${stamp}</div>
+                <div class="card-header">${title}</div>
+                ${items.map(it => `<div class="exhibit-item">
+                    <div class="exhibit-title ${titleClass}">${getExhibit()} ${it.title}</div>
+                    <div class="exhibit-detail">${it.detail}</div>
+                </div>`).join('')}
+            </div>`;
+        }
+
+        function animateResults(container) {
+            setTimeout(() => {
+                container.querySelectorAll('.score-fill').forEach(f => { f.style.width = f.dataset.width; });
+                container.querySelectorAll('.evidence-card').forEach((c,i) => {
+                    setTimeout(() => { c.classList.add('visible'); playTypewriterClick(); }, 300 + i * 400);
+                });
+            }, 100);
+        }
+
+        // ── ANALYZE ──
+        async function analyze() {
+            const text = textarea.value.trim();
+            const words = text.split(/\s+/).filter(Boolean).length;
+            if (!text || words < 50) { showError('error-state', 'INSUFFICIENT EVIDENCE — Paste at least 50 words.'); return; }
+
+            document.getElementById('results-section').innerHTML = '';
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('error-state').style.display = 'none';
+            document.getElementById('loading-state').style.display = 'block';
+            document.getElementById('analyze-btn').disabled = true;
+            statusDot.classList.add('active');
+            statusText.innerText = 'CASE OPEN';
+
+            try {
+                const res = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Request failed');
+
+                // Save to history
+                saveToHistory(text, data);
+
+                // Render
+                exhibitCounter = 1;
+                const section = document.getElementById('results-section');
+                section.innerHTML = `
+                    <div class="overall-summary">${data.overall}</div>
+                    <div class="scores-panel">${buildScoresHTML(data.scores)}</div>
+                    ${buildEvidenceCard('PLOT HOLES & INCONSISTENCIES', data.plot_holes, '', 'CRITICAL', 'stamp-critical')}
+                    ${buildEvidenceCard('CHARACTER ISSUES', data.character_issues, '', 'CRITICAL', 'stamp-critical')}
+                    ${buildEvidenceCard('TENSION & SUSPENSE', data.tension_suggestions, 'advisory-title', 'ADVISORY', 'stamp-advisory')}
+                    ${buildEvidenceCard('PACING NOTES', data.pacing_notes, 'advisory-title', 'ADVISORY', 'stamp-advisory')}
+                    ${buildEvidenceCard('IDENTIFIED STRENGTHS', data.strengths, 'strength-title', 'CLEARED', 'stamp-cleared')}
+                `;
+                document.getElementById('loading-state').style.display = 'none';
+                section.style.display = 'flex';
+                animateResults(section);
+
+            } catch (err) {
+                document.getElementById('loading-state').style.display = 'none';
+                showError('error-state', 'ANALYSIS FAILED — ' + (err.message || 'Try again.'));
+            } finally {
+                document.getElementById('analyze-btn').disabled = false;
+                statusDot.classList.remove('active');
+                statusText.innerText = 'SYSTEM READY';
+            }
+        }
+
+        // ── COMPARE DRAFTS ──
+        async function compareDrafts() {
+            const text1 = document.getElementById('draft1-input').value.trim();
+            const text2 = document.getElementById('draft2-input').value.trim();
+            if (text1.split(/\s+/).length < 30 || text2.split(/\s+/).length < 30) {
+                showError('compare-error', 'INSUFFICIENT EVIDENCE — Each draft needs at least 30 words.');
+                return;
+            }
+
+            document.getElementById('compare-results').innerHTML = '';
+            document.getElementById('compare-results').style.display = 'none';
+            document.getElementById('compare-error').style.display = 'none';
+            document.getElementById('compare-loading').style.display = 'block';
+            document.getElementById('compare-btn').disabled = true;
+            statusDot.classList.add('active');
+            statusText.innerText = 'CROSS-REFERENCING';
+
+            try {
+                const res = await fetch('/api/compare', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ text1, text2 })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Request failed');
+
+                const winnerColor = data.winner === 'Draft 1' ? 'var(--steel-blue)' : data.winner === 'Draft 2' ? 'var(--green)' : 'var(--amber)';
+                const changeClass = v => v === 'Improved' ? 'improved' : v === 'Weakened' ? 'weakened' : 'same';
+
+                exhibitCounter = 1;
+                const section = document.getElementById('compare-results');
+                section.innerHTML = `
+                    <div class="verdict-banner" style="border-color:${winnerColor}">
+                        <div class="verdict-winner" style="color:${winnerColor}">${data.winner.toUpperCase()} PREVAILS</div>
+                        <div class="verdict-text">${data.verdict}</div>
+                        <div class="verdict-advice">→ ${data.key_advice}</div>
+                    </div>
+                    <div class="compare-scores">
+                        ${Object.entries(data.score_change || {}).map(([k,v]) => `
+                        <div class="compare-score-box">
+                            <div class="compare-score-key">${k.toUpperCase()}</div>
+                            <div class="compare-score-val ${changeClass(v)}">${v.toUpperCase()}</div>
+                        </div>`).join('')}
+                    </div>
+                    ${buildEvidenceCard('IMPROVEMENTS IN DRAFT 2', data.improvements, 'strength-title', 'CLEARED', 'stamp-cleared')}
+                    ${buildEvidenceCard('REGRESSIONS FROM DRAFT 1', data.regressions, '', 'CRITICAL', 'stamp-critical')}
+                    ${buildEvidenceCard('ISSUES IN BOTH DRAFTS', data.unchanged_issues, 'advisory-title', 'ADVISORY', 'stamp-advisory')}
+                `;
+                document.getElementById('compare-loading').style.display = 'none';
+                section.style.display = 'flex';
+                animateResults(section);
+
+            } catch (err) {
+                document.getElementById('compare-loading').style.display = 'none';
+                showError('compare-error', 'COMPARISON FAILED — ' + (err.message || 'Try again.'));
+            } finally {
+                document.getElementById('compare-btn').disabled = false;
+                statusDot.classList.remove('active');
+                statusText.innerText = 'SYSTEM READY';
+            }
+        }
+
+        // ── Init on load ──
+        renderSidebarHistory();
+    </script>
 </body>
 </html>
