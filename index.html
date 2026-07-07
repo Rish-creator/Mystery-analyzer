@@ -724,6 +724,7 @@
                 document.getElementById('compare-loading').style.display = 'none';
                 section.style.display = 'flex';
                 animateResults(section);
+                setTimeout(() => section.scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
 
             } catch (err) {
                 document.getElementById('compare-loading').style.display = 'none';
