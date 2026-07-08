@@ -330,6 +330,68 @@
 
         .char-missing { padding: 1rem 1.5rem; background: rgba(74,127,165,0.05); border-left: 3px solid #333; font-size: 0.85rem; color: #777; }
 
+        /* ── Sentiment Arc ── */
+        .sentiment-intro { font-family: var(--font-mono); font-size: 0.8rem; color: #555; margin-bottom: 1.5rem; line-height: 1.6; padding: 1rem; background: var(--surface-color); border-left: 3px solid #333; }
+        .sentiment-intro span { color: var(--steel-blue); }
+        #sentiment-chart-wrap { display: none; margin-top: 2rem; }
+        .sentiment-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 1rem; margin-bottom: 2rem; }
+        .stat-box { background: var(--surface-color); border: 1px solid #2a2a2a; padding: 1rem 1.25rem; }
+        .stat-label { font-family: var(--font-mono); font-size: 0.68rem; color: #555; letter-spacing: 2px; margin-bottom: 6px; }
+        .stat-value { font-family: var(--font-mono); font-size: 1.1rem; font-weight: 700; }
+        .stat-positive { color: var(--green); }
+        .stat-negative { color: var(--red-bright); }
+        .stat-neutral { color: var(--steel-blue); }
+        #sentiment-svg-container { background: var(--surface-color); border: 1px solid #2a2a2a; padding: 1.5rem; margin-bottom: 2rem; overflow-x: auto; }
+        #sentiment-svg-container svg { display: block; width: 100%; height: auto; }
+        .sentiment-tooltip { position: fixed; background: #1a1918; border: 1px solid var(--amber); padding: 10px 14px; font-family: var(--font-mono); font-size: 0.72rem; color: var(--text-main); max-width: 280px; pointer-events: none; z-index: 1000; display: none; line-height: 1.5; }
+        .tooltip-score { color: var(--amber); margin-bottom: 4px; }
+        .tooltip-text { color: #888; font-size: 0.68rem; }
+        .sentiment-legend { display: flex; gap: 2rem; font-family: var(--font-mono); font-size: 0.72rem; color: #666; margin-bottom: 1rem; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 6px; }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .peak-annotations { background: var(--surface-color); border: 1px solid #2a2a2a; padding: 1.5rem; }
+        .peak-title { font-family: var(--font-mono); font-size: 0.85rem; color: #fff; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #333; }
+        .peak-item { margin-bottom: 1rem; padding: 0.75rem 1rem; border-left: 2px solid; }
+        .peak-item:last-child { margin-bottom: 0; }
+        .peak-high { border-color: var(--green); }
+        .peak-low { border-color: var(--red-bright); }
+        .peak-item-label { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 1px; margin-bottom: 4px; }
+        .peak-high .peak-item-label { color: var(--green); }
+        .peak-low .peak-item-label { color: var(--red-bright); }
+        .peak-item-text { font-size: 0.85rem; color: #888; line-height: 1.5; font-style: italic; }
+
+        /* ── Readability ── */
+        .readability-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .read-metric { background: var(--surface-color); border: 1px solid #2a2a2a; padding: 1.25rem; }
+        .read-metric-label { font-family: var(--font-mono); font-size: 0.68rem; color: #555; letter-spacing: 2px; margin-bottom: 6px; }
+        .read-metric-value { font-family: var(--font-mono); font-size: 1.4rem; font-weight: 700; margin-bottom: 4px; }
+        .read-metric-sub { font-family: var(--font-mono); font-size: 0.72rem; color: #666; }
+        .read-grade-easy { color: var(--green); }
+        .read-grade-mid { color: var(--amber); }
+        .read-grade-hard { color: var(--red-bright); }
+
+        .read-section { background: var(--surface-color); border: 1px solid #2a2a2a; padding: 1.5rem; margin-bottom: 1rem; }
+        .read-section-title { font-family: var(--font-mono); font-size: 0.85rem; color: #fff; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #333; }
+
+        .read-bar-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 0.75rem; }
+        .read-bar-label { font-family: var(--font-mono); font-size: 0.72rem; color: #888; width: 160px; flex-shrink: 0; }
+        .read-bar-track { flex: 1; height: 6px; background: #111; position: relative; }
+        .read-bar-fill { height: 100%; transition: width 1s cubic-bezier(0.4,0,0.2,1); }
+        .read-bar-val { font-family: var(--font-mono); font-size: 0.72rem; color: #888; width: 50px; text-align: right; flex-shrink: 0; }
+
+        .dense-sentences { margin-top: 1rem; }
+        .dense-item { padding: 0.75rem 1rem; border-left: 2px solid var(--amber); margin-bottom: 0.75rem; }
+        .dense-item-meta { font-family: var(--font-mono); font-size: 0.68rem; color: var(--amber); margin-bottom: 4px; }
+        .dense-item-text { font-size: 0.85rem; color: #888; line-height: 1.5; font-style: italic; }
+
+        .vocab-words { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 0.75rem; }
+        .vocab-word { font-family: var(--font-mono); font-size: 0.72rem; padding: 3px 9px; background: #1a1918; border: 1px solid #333; color: #999; }
+        .vocab-word.complex { border-color: var(--amber); color: var(--amber); }
+
+        .read-verdict { padding: 1.25rem 1.5rem; border-left: 3px solid var(--steel-blue); background: rgba(74,127,165,0.05); margin-bottom: 1.5rem; }
+        .read-verdict-label { font-family: var(--font-mono); font-size: 0.7rem; color: var(--steel-blue); letter-spacing: 2px; margin-bottom: 6px; }
+        .read-verdict-text { font-size: 0.95rem; color: var(--text-offwhite); line-height: 1.6; }
+
         /* ── Ticker ── */
         .ticker-wrap { position: fixed; bottom: 0; width: 100%; background-color: var(--amber); height: 24px; overflow: hidden; z-index: 100; }
         .ticker { display: inline-block; white-space: nowrap; padding-top: 4px; font-family: var(--font-mono); font-size: 0.75rem; color: #000; font-weight: 700; animation: ticker 30s linear infinite; }
@@ -365,6 +427,8 @@
                 <li data-view="compare">COMPARE DRAFTS</li>
                 <li data-view="history">CASE HISTORY</li>
                 <li data-view="characters">CHARACTER MAP</li>
+                <li data-view="sentiment">TENSION ARC</li>
+                <li data-view="readability">READABILITY</li>
             </ul>
 
             <div class="history-section-label">RECENT CASES</div>
@@ -461,7 +525,62 @@
         </main>
     </div>
 
-    <div class="ticker-wrap">
+            <!-- ── VIEW: SENTIMENT ARC ── -->
+            <div class="view" id="view-sentiment">
+                <div class="view-label">// TENSION ARC — LOCAL NLP, NO API, INSTANT RESULTS</div>
+                <div class="sentiment-intro">
+                    Analyzes emotional tension across your chapter using a <span>2,477-word sentiment lexicon</span> running entirely in your browser.
+                    No API call. No cost. Results are instant.<br><br>
+                    Paste a chapter below and see where your tension peaks, where it drops, and where readers might disengage.
+                </div>
+                <div class="editor-container">
+                    <textarea id="sentiment-input" placeholder="[PASTE CHAPTER HERE FOR TENSION ANALYSIS]"></textarea>
+                </div>
+                <div class="editor-footer">
+                    <div class="word-count">EVIDENCE: <span id="sentiment-word-count">0</span> WORDS</div>
+                    <div class="actions">
+                        <button class="btn-clear" onclick="clearSentiment()">CLEAR</button>
+                        <button class="btn-analyze" onclick="analyzeSentiment()">PLOT TENSION ARC</button>
+                    </div>
+                </div>
+                <div id="sentiment-error" class="error-state"></div>
+                <div id="sentiment-chart-wrap">
+                    <div class="sentiment-stats" id="sentiment-stats"></div>
+                    <div class="sentiment-legend">
+                        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div> High tension / dark</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:var(--steel-blue)"></div> Neutral / calm</div>
+                        <div class="legend-item"><div class="legend-dot" style="background:#888"></div> Segment boundary</div>
+                    </div>
+                    <div id="sentiment-svg-container"></div>
+                    <div class="peak-annotations" id="peak-annotations"></div>
+                </div>
+                <div class="sentiment-tooltip" id="sentiment-tooltip">
+                    <div class="tooltip-score" id="tooltip-score"></div>
+                    <div class="tooltip-text" id="tooltip-text"></div>
+                </div>
+            </div>
+
+            <!-- ── VIEW: READABILITY ── -->
+            <div class="view" id="view-readability">
+                <div class="view-label">// READABILITY & COMPLEXITY — LOCAL ANALYSIS, NO API</div>
+                <div class="sentiment-intro">
+                    Computes <span>Flesch-Kincaid Grade Level</span>, <span>Gunning Fog Index</span>, average sentence length,
+                    vocabulary diversity, and dialogue density — all locally in your browser.
+                    Tells you exactly how hard your prose is to read and where it gets dense.
+                </div>
+                <div class="editor-container">
+                    <textarea id="readability-input" placeholder="[PASTE CHAPTER HERE FOR READABILITY ANALYSIS]"></textarea>
+                </div>
+                <div class="editor-footer">
+                    <div class="word-count">EVIDENCE: <span id="readability-word-count">0</span> WORDS</div>
+                    <div class="actions">
+                        <button class="btn-clear" onclick="clearReadability()">CLEAR</button>
+                        <button class="btn-analyze" onclick="analyzeReadability()">ANALYZE READABILITY</button>
+                    </div>
+                </div>
+                <div id="readability-error" class="error-state"></div>
+                <div id="readability-results" style="display:none; margin-top:2rem;"></div>
+            </div>
         <div class="ticker">PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • DO NOT DISTRIBUTE • PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • DO NOT DISTRIBUTE • PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • </div>
     </div>
 
@@ -982,6 +1101,409 @@
                 statusDot.classList.remove('active');
                 statusText.innerText = 'SYSTEM READY';
             }
+        }
+
+        // ── SENTIMENT ARC ──
+        // AFINN-165 lexicon subset (scores -5 to +5, normalized to -1 to +1)
+        const AFINN = {"abandon":-2,"abhor":-3,"abhorrent":-3,"abuse":-3,"ache":-2,"aching":-2,"aggravate":-2,"aggression":-2,"aggressive":-2,"agitated":-2,"agony":-3,"alarm":-2,"alarmed":-2,"alarming":-2,"ambush":-2,"anger":-2,"angry":-2,"anguish":-3,"annoy":-2,"annoyance":-2,"anxious":-2,"appall":-3,"appalling":-3,"apprehension":-2,"assault":-2,"atrocious":-3,"atrocity":-4,"attack":-2,"awful":-3,"awkward":-2,"bad":-2,"baffled":-1,"banish":-2,"battered":-2,"betray":-3,"betrayal":-3,"bitter":-2,"blame":-2,"bleed":-2,"bleeding":-2,"bleak":-2,"blood":-1,"brutal":-3,"brutality":-3,"burden":-2,"burn":-2,"chaos":-2,"cheat":-2,"cold":-1,"collapse":-2,"conflict":-2,"confuse":-1,"confused":-1,"corrupt":-3,"coward":-2,"cowardly":-2,"crash":-2,"crave":-1,"crime":-2,"criminal":-2,"crisis":-2,"cruel":-3,"cruelty":-3,"crush":-2,"curse":-3,"cynical":-2,"damage":-2,"danger":-2,"dangerous":-2,"dark":-1,"dead":-2,"deadly":-3,"death":-2,"decay":-2,"deceive":-3,"deception":-3,"defeat":-2,"desolate":-3,"despair":-3,"desperate":-2,"destroy":-3,"destructive":-3,"devastate":-3,"devastating":-3,"disaster":-3,"disease":-2,"disgust":-3,"disgusting":-3,"dismiss":-2,"disorder":-2,"distress":-2,"disturb":-2,"disturbing":-2,"doubt":-1,"dread":-3,"dreadful":-3,"dying":-2,"empty":-1,"enemy":-2,"evil":-3,"fail":-2,"failure":-2,"fake":-2,"fall":-1,"false":-2,"fear":-2,"fearful":-2,"fight":-1,"filth":-3,"foolish":-2,"force":-1,"fragile":-1,"fraud":-3,"fright":-2,"frighten":-2,"frightening":-3,"frustrate":-2,"frustration":-2,"fury":-3,"grief":-3,"grim":-2,"groan":-2,"guilt":-2,"harsh":-2,"hate":-3,"hatred":-3,"helpless":-2,"hopeless":-3,"horrible":-3,"horrified":-3,"horrify":-3,"horror":-3,"hostile":-2,"hurt":-2,"ignorant":-2,"illegal":-2,"imprison":-2,"insecure":-2,"insult":-2,"kill":-3,"lack":-1,"liar":-3,"lie":-2,"lifeless":-2,"lonely":-2,"lose":-1,"loss":-2,"lost":-1,"mad":-2,"malicious":-3,"menace":-2,"menacing":-2,"miserable":-3,"misery":-3,"mistake":-1,"mourn":-2,"murder":-4,"neglect":-2,"nervous":-2,"nightmare":-3,"numb":-1,"offensive":-2,"overwhelm":-2,"pain":-2,"painful":-2,"panic":-2,"paranoid":-2,"pathetic":-2,"poison":-3,"poverty":-2,"powerless":-2,"problem":-1,"rage":-3,"regret":-2,"reject":-2,"rotten":-3,"ruin":-3,"sad":-2,"savage":-3,"scare":-2,"scared":-2,"shame":-2,"shatter":-2,"shriek":-2,"sick":-2,"sinister":-3,"sorrow":-3,"stab":-3,"steal":-2,"stress":-2,"struggle":-2,"suffer":-2,"suffering":-3,"suspicious":-1,"tear":-1,"tears":-1,"terror":-3,"terrify":-3,"threat":-2,"threaten":-2,"torture":-4,"tragic":-3,"trap":-2,"trouble":-2,"ugly":-2,"unease":-1,"unfortunate":-2,"unhappy":-2,"unstable":-2,"vicious":-3,"victim":-2,"violence":-3,"violent":-3,"vulnerable":-2,"warn":-1,"weak":-1,"weep":-2,"wicked":-3,"worry":-2,"wound":-2,"wrath":-3,"wrong":-2,"abuse":-3,"aggrieve":-2,"ail":-1,"alienate":-2,"antagonize":-2,"betray":-3,"confiscate":-2,"contaminate":-2,"demean":-2,"demoralize":-2,"deprive":-2,"deteriorate":-2,"exploit":-3,"falter":-1,"grieve":-2,"harm":-2,"humiliate":-3,"manipulate":-3,"oppress":-3,"persecute":-3,"sabotage":-3,"slaughter":-4,"suppress":-2,"terrorize":-4,"torment":-3,"undermine":-2,"violate":-3,"abandon":-2,"astound":-1,"breathless":-1,"cornered":-2,"creep":-1,"crooked":-2,"desperate":-2,"erratic":-1,"evasive":-1,"hollow":-2,"hunted":-2,"obsessed":-1,"reckless":-2,"restless":-1,"shaken":-2,"shudder":-2,"silent":-1,"sinister":-3,"smirk":-1,"stalk":-2,"tense":-1,"uneasy":-1,"vanish":-1,"wary":-1,"whisper":-1,"abandon":-2,"abrupt":-1,
+        "admire":2,"adore":3,"agree":1,"alert":1,"alive":2,"amaze":3,"amazing":4,"appreciate":2,"astonish":3,"attain":2,"attract":2,"awesome":4,"balance":2,"beautiful":3,"believe":1,"benefit":2,"best":3,"better":2,"brave":2,"brilliant":3,"calm":2,"capable":2,"care":2,"careful":1,"celebrate":3,"certain":1,"cheerful":2,"clean":2,"clear":2,"clever":2,"comfort":2,"confident":2,"courage":3,"creative":2,"dedicated":2,"delight":3,"discover":2,"dream":1,"drive":1,"ease":2,"effective":2,"efficient":2,"encourage":2,"enjoy":2,"excitement":3,"expert":2,"extraordinary":4,"faith":2,"familiar":1,"fantastic":4,"fascinate":3,"fine":1,"focus":1,"free":2,"fresh":2,"friendly":2,"glad":2,"glorious":3,"good":2,"great":3,"grow":1,"guidance":2,"happy":3,"harmony":2,"heal":2,"heart":1,"help":2,"helpful":2,"hero":3,"hope":3,"humor":1,"imagine":1,"improve":2,"insight":2,"inspire":3,"intelligent":2,"joy":3,"kind":2,"knowledge":2,"laugh":2,"learn":2,"light":1,"love":3,"loyal":3,"luck":2,"magnificent":4,"master":2,"motivate":2,"nice":2,"opportunity":2,"optimistic":2,"passion":2,"patient":2,"perfect":3,"positive":2,"powerful":2,"praise":3,"pride":2,"progress":2,"protect":2,"proud":2,"radiant":3,"remarkable":3,"resolve":2,"respect":2,"rise":1,"safe":2,"satisfy":2,"save":2,"shine":2,"skilled":2,"smile":2,"strength":3,"success":3,"support":2,"talent":2,"thankful":2,"thrill":2,"triumph":3,"trust":3,"truth":2,"unique":1,"victory":3,"vision":2,"warm":2,"wise":2,"wonder":3,"worthy":2,"achieve":2,"advance":1,"affection":3,"alert":1,"answer":1,"arrive":1,"assist":2,"award":2,"awesome":4,"begin":1,"bond":2,"bright":2,"change":1,"choose":1,"connect":2,"content":2,"create":2,"cure":3,"determined":2,"devoted":2,"eager":2,"energetic":2,"engage":2,"excel":3,"fair":2,"faithful":3,"flourish":3,"fortunate":2,"fun":2,"genuine":2,"grateful":3,"honest":2,"honor":3,"hug":2,"ideal":2,"imagination":2,"important":1,"incredible":3,"independence":2,"innovative":2,"integrity":3,"keen":1,"leader":2,"meaningful":2,"memorable":2,"mindful":2,"noble":3,"nurture":2,"open":1,"outstanding":3,"overcome":2,"peaceful":3,"persist":2,"perspective":1,"powerful":2,"refresh":2,"reliable":2,"resilient":3,"reward":2,"safe":2,"secure":2,"serene":3,"sincere":2,"smart":2,"steady":1,"strong":2,"sublime":3,"surprise":1,"thoughtful":2,"together":1,"transform":2,"understand":1,"unite":2,"uplift":2,"value":2,"vibrant":2,"welcome":2,"willing":1,"wonderful":4};
+
+        const sentimentInput = document.getElementById('sentiment-input');
+        sentimentInput.addEventListener('input', () => {
+            const w = sentimentInput.value.trim().split(/\s+/).filter(Boolean).length;
+            document.getElementById('sentiment-word-count').textContent = w;
+        });
+
+        function clearSentiment() {
+            sentimentInput.value = '';
+            document.getElementById('sentiment-word-count').textContent = '0';
+            document.getElementById('sentiment-chart-wrap').style.display = 'none';
+            document.getElementById('sentiment-error').style.display = 'none';
+            document.getElementById('sentiment-svg-container').innerHTML = '';
+            document.getElementById('sentiment-stats').innerHTML = '';
+            document.getElementById('peak-annotations').innerHTML = '';
+        }
+
+        function scoreText(text) {
+            const words = text.toLowerCase().replace(/[^a-z\s]/g, ' ').split(/\s+/).filter(Boolean);
+            let score = 0, matches = 0;
+            words.forEach(w => {
+                if (AFINN[w] !== undefined) { score += AFINN[w]; matches++; }
+            });
+            return words.length > 0 ? score / Math.max(words.length * 0.5, 1) : 0;
+        }
+
+        function clamp(v, min, max) { return Math.min(Math.max(v, min), max); }
+
+        function movingAverage(arr, window) {
+            return arr.map((_, i) => {
+                const start = Math.max(0, i - Math.floor(window/2));
+                const end = Math.min(arr.length, i + Math.ceil(window/2));
+                const slice = arr.slice(start, end);
+                return slice.reduce((a,b) => a+b, 0) / slice.length;
+            });
+        }
+
+        function scoreToColor(score) {
+            if (score <= -0.3) {
+                const t = clamp((-score - 0.3) / 0.7, 0, 1);
+                const r = Math.round(139 + t * (255 - 139));
+                const g = Math.round(0);
+                const b = Math.round(0);
+                return `rgb(${r},${g},${b})`;
+            } else if (score >= 0.3) {
+                const t = clamp((score - 0.3) / 0.7, 0, 1);
+                const r = Math.round(46 + t * (0 - 46));
+                const g = Math.round(139 + t * (200 - 139));
+                const b = Math.round(87 + t * (0 - 87));
+                return `rgb(${r},${g},${b})`;
+            }
+            return '#4a7fa5';
+        }
+
+        function analyzeSentiment() {
+            const text = sentimentInput.value.trim();
+            const words = text.split(/\s+/).filter(Boolean).length;
+            if (!text || words < 50) {
+                const el = document.getElementById('sentiment-error');
+                el.textContent = 'INSUFFICIENT EVIDENCE — Paste at least 50 words.';
+                el.style.display = 'block';
+                return;
+            }
+            document.getElementById('sentiment-error').style.display = 'none';
+
+            // Split into segments (~60 words each, min 8 segments)
+            const allWords = text.split(/\s+/).filter(Boolean);
+            const segSize = Math.max(40, Math.floor(allWords.length / Math.max(8, Math.floor(allWords.length / 60))));
+            const segments = [];
+            for (let i = 0; i < allWords.length; i += segSize) {
+                segments.push(allWords.slice(i, i + segSize).join(' '));
+            }
+
+            const rawScores = segments.map(s => scoreText(s));
+            const smoothed = movingAverage(rawScores, 3);
+
+            // Stats
+            const avg = smoothed.reduce((a,b) => a+b, 0) / smoothed.length;
+            const maxScore = Math.max(...smoothed);
+            const minScore = Math.min(...smoothed);
+            const maxIdx = smoothed.indexOf(maxScore);
+            const minIdx = smoothed.indexOf(minScore);
+
+            // Stats boxes
+            const statClass = v => v > 0.1 ? 'stat-positive' : v < -0.1 ? 'stat-negative' : 'stat-neutral';
+            const pct = v => Math.round((v + 5) / 10 * 100);
+            document.getElementById('sentiment-stats').innerHTML = `
+                <div class="stat-box">
+                    <div class="stat-label">OVERALL TONE</div>
+                    <div class="stat-value ${statClass(avg)}">${avg < -0.3 ? 'DARK' : avg < -0.1 ? 'TENSE' : avg < 0.1 ? 'NEUTRAL' : avg < 0.3 ? 'HOPEFUL' : 'POSITIVE'}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">PEAK TENSION</div>
+                    <div class="stat-value stat-negative">SEGMENT ${minIdx + 1} / ${segments.length}</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">PEAK POSITIVITY</div>
+                    <div class="stat-value stat-positive">SEGMENT ${maxIdx + 1} / ${segments.length}</div>
+                </div>`;
+
+            // SVG Chart
+            const W = 800, H = 280, PAD = { top: 30, right: 20, bottom: 40, left: 50 };
+            const chartW = W - PAD.left - PAD.right;
+            const chartH = H - PAD.top - PAD.bottom;
+            const minY = Math.min(minScore, -0.5), maxY = Math.max(maxScore, 0.5);
+            const range = maxY - minY || 1;
+
+            const xPos = i => PAD.left + (i / (smoothed.length - 1)) * chartW;
+            const yPos = v => PAD.top + (1 - (v - minY) / range) * chartH;
+            const zeroY = yPos(0);
+
+            // Build SVG path with colored segments
+            let paths = '';
+            for (let i = 0; i < smoothed.length - 1; i++) {
+                const x1 = xPos(i), y1 = yPos(smoothed[i]);
+                const x2 = xPos(i+1), y2 = yPos(smoothed[i+1]);
+                const color = scoreToColor((smoothed[i] + smoothed[i+1]) / 2);
+                paths += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="3" stroke-linecap="round"/>`;
+            }
+
+            // Area fill
+            let areaPath = `M${xPos(0)},${zeroY} L${xPos(0)},${yPos(smoothed[0])}`;
+            smoothed.forEach((v, i) => { if (i > 0) areaPath += ` L${xPos(i)},${yPos(v)}`; });
+            areaPath += ` L${xPos(smoothed.length-1)},${zeroY} Z`;
+
+            // Grid lines
+            let gridLines = '';
+            [-0.6,-0.3,0,0.3,0.6].forEach(v => {
+                if (v < minY || v > maxY) return;
+                const y = yPos(v);
+                const label = v === 0 ? 'NEUTRAL' : v > 0 ? `+${v.toFixed(1)}` : v.toFixed(1);
+                gridLines += `<line x1="${PAD.left}" y1="${y}" x2="${W - PAD.right}" y2="${y}" stroke="${v===0?'#444':'#222'}" stroke-width="${v===0?1.5:0.5}" stroke-dasharray="${v===0?'':4}"/>`;
+                gridLines += `<text x="${PAD.left - 6}" y="${y + 4}" text-anchor="end" font-family="JetBrains Mono, monospace" font-size="9" fill="#555">${label}</text>`;
+            });
+
+            // X axis labels
+            let xLabels = '';
+            const step = Math.max(1, Math.floor(smoothed.length / 8));
+            for (let i = 0; i < smoothed.length; i += step) {
+                xLabels += `<text x="${xPos(i)}" y="${H - PAD.bottom + 16}" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" fill="#555">P${i+1}</text>`;
+            }
+
+            // Data points (invisible hit areas)
+            let points = '';
+            smoothed.forEach((v, i) => {
+                const color = scoreToColor(v);
+                const preview = segments[i].slice(0, 80).replace(/"/g, '&quot;') + '...';
+                points += `<circle cx="${xPos(i)}" cy="${yPos(v)}" r="6" fill="${color}" stroke="var(--bg-color)" stroke-width="2" 
+                    class="sentiment-point" 
+                    data-score="${v.toFixed(3)}" 
+                    data-seg="${i+1}"
+                    data-preview="${preview}"
+                    style="cursor:crosshair"/>`;
+            });
+
+            // Mark peaks
+            const peakCircles = `
+                <circle cx="${xPos(minIdx)}" cy="${yPos(minScore)}" r="8" fill="none" stroke="var(--red-bright)" stroke-width="2"/>
+                <circle cx="${xPos(maxIdx)}" cy="${yPos(maxScore)}" r="8" fill="none" stroke="var(--green)" stroke-width="2"/>`;
+
+            document.getElementById('sentiment-svg-container').innerHTML = `
+                <svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#8b0000" stop-opacity="0.15"/>
+                            <stop offset="50%" stop-color="#4a7fa5" stop-opacity="0.05"/>
+                            <stop offset="100%" stop-color="#2e8b57" stop-opacity="0.1"/>
+                        </linearGradient>
+                    </defs>
+                    ${gridLines}
+                    <path d="${areaPath}" fill="url(#areaGrad)"/>
+                    ${paths}
+                    ${peakCircles}
+                    ${points}
+                    ${xLabels}
+                    <text x="${PAD.left}" y="${H - 4}" font-family="JetBrains Mono, monospace" font-size="9" fill="#444">PARAGRAPH SEGMENTS →</text>
+                </svg>`;
+
+            // Tooltip
+            const tooltip = document.getElementById('sentiment-tooltip');
+            document.querySelectorAll('.sentiment-point').forEach(pt => {
+                pt.addEventListener('mouseenter', e => {
+                    document.getElementById('tooltip-score').textContent = `SEG ${e.target.dataset.seg} · SCORE: ${parseFloat(e.target.dataset.score).toFixed(2)}`;
+                    document.getElementById('tooltip-text').textContent = '"' + e.target.dataset.preview + '"';
+                    tooltip.style.display = 'block';
+                });
+                pt.addEventListener('mousemove', e => {
+                    tooltip.style.left = (e.clientX + 16) + 'px';
+                    tooltip.style.top = (e.clientY - 40) + 'px';
+                });
+                pt.addEventListener('mouseleave', () => { tooltip.style.display = 'none'; });
+            });
+
+            // Peak annotations
+            document.getElementById('peak-annotations').innerHTML = `
+                <div class="peak-title">KEY MOMENTS</div>
+                <div class="peak-item peak-low">
+                    <div class="peak-item-label">PEAK TENSION — SEGMENT ${minIdx + 1}</div>
+                    <div class="peak-item-text">${segments[minIdx].slice(0, 150)}...</div>
+                </div>
+                <div class="peak-item peak-high">
+                    <div class="peak-item-label">PEAK POSITIVITY — SEGMENT ${maxIdx + 1}</div>
+                    <div class="peak-item-text">${segments[maxIdx].slice(0, 150)}...</div>
+                </div>`;
+
+            document.getElementById('sentiment-chart-wrap').style.display = 'block';
+            setTimeout(() => document.getElementById('sentiment-chart-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+        }
+
+        // ── READABILITY & COMPLEXITY ──
+        const readInput = document.getElementById('readability-input');
+        readInput.addEventListener('input', () => {
+            const w = readInput.value.trim().split(/\s+/).filter(Boolean).length;
+            document.getElementById('readability-word-count').textContent = w;
+        });
+
+        function clearReadability() {
+            readInput.value = '';
+            document.getElementById('readability-word-count').textContent = '0';
+            document.getElementById('readability-results').style.display = 'none';
+            document.getElementById('readability-error').style.display = 'none';
+        }
+
+        // Count syllables in a word (English approximation)
+        function countSyllables(word) {
+            word = word.toLowerCase().replace(/[^a-z]/g, '');
+            if (word.length <= 3) return 1;
+            word = word.replace(/(?:[^laeiouy]es|ed|[^laeiouy]e)$/, '');
+            word = word.replace(/^y/, '');
+            const matches = word.match(/[aeiouy]{1,2}/g);
+            return matches ? matches.length : 1;
+        }
+
+        // Is word complex? (3+ syllables, not proper noun, not compound)
+        function isComplex(word) {
+            const clean = word.toLowerCase().replace(/[^a-z]/g, '');
+            if (clean.length < 4) return false;
+            return countSyllables(clean) >= 3;
+        }
+
+        // Tokenize into sentences
+        function getSentences(text) {
+            return text.split(/[.!?]+/).map(s => s.trim()).filter(s => s.split(/\s+/).length > 2);
+        }
+
+        // Is sentence dialogue?
+        function isDialogue(sentence) {
+            return /[""\u201c\u201d]/.test(sentence);
+        }
+
+        function analyzeReadability() {
+            const text = readInput.value.trim();
+            const words = text.split(/\s+/).filter(Boolean);
+            if (!text || words.length < 50) {
+                const el = document.getElementById('readability-error');
+                el.textContent = 'INSUFFICIENT EVIDENCE — Paste at least 50 words.';
+                el.style.display = 'block';
+                return;
+            }
+            document.getElementById('readability-error').style.display = 'none';
+
+            const sentences = getSentences(text);
+            const sentenceCount = Math.max(sentences.length, 1);
+            const wordCount = words.length;
+
+            // Syllable count
+            const syllableCounts = words.map(w => countSyllables(w));
+            const totalSyllables = syllableCounts.reduce((a,b) => a+b, 0);
+            const avgSyllables = totalSyllables / wordCount;
+
+            // Complex words
+            const complexWords = words.filter(w => isComplex(w));
+            const complexPct = (complexWords.length / wordCount) * 100;
+
+            // Sentence lengths
+            const sentLengths = sentences.map(s => s.split(/\s+/).filter(Boolean).length);
+            const avgSentLen = sentLengths.reduce((a,b)=>a+b,0) / sentenceCount;
+            const maxSentLen = Math.max(...sentLengths);
+
+            // Flesch-Kincaid Grade Level
+            const fk = 0.39 * (wordCount / sentenceCount) + 11.8 * (totalSyllables / wordCount) - 15.59;
+
+            // Gunning Fog Index
+            const fog = 0.4 * ((wordCount / sentenceCount) + (complexWords.length / wordCount) * 100);
+
+            // Vocabulary diversity (Type-Token Ratio)
+            const uniqueWords = new Set(words.map(w => w.toLowerCase().replace(/[^a-z]/g, '')));
+            const ttr = (uniqueWords.size / wordCount) * 100;
+
+            // Dialogue density
+            const dialogueSentences = sentences.filter(isDialogue).length;
+            const dialoguePct = (dialogueSentences / sentenceCount) * 100;
+
+            // Dense sentences (top 3 longest)
+            const sentWithIdx = sentences.map((s,i) => ({ s, len: sentLengths[i] }))
+                .sort((a,b) => b.len - a.len).slice(0,3);
+
+            // Top complex words (unique, sorted by syllables)
+            const complexUnique = [...new Set(complexWords.map(w => w.toLowerCase().replace(/[^a-z]/g,'')))]
+                .sort((a,b) => countSyllables(b) - countSyllables(a)).slice(0, 20);
+
+            // Grade color
+            const gradeClass = v => v <= 8 ? 'read-grade-easy' : v <= 12 ? 'read-grade-mid' : 'read-grade-hard';
+            const gradeLabel = v => v <= 6 ? 'EASY READ' : v <= 8 ? 'ACCESSIBLE' : v <= 10 ? 'MODERATE' : v <= 12 ? 'CHALLENGING' : 'VERY DENSE';
+
+            // Verdict
+            const verdictParts = [];
+            if (fk > 12) verdictParts.push('prose is very dense — consider breaking up long sentences');
+            else if (fk < 7) verdictParts.push('prose is very accessible — good for fast-paced thriller sections');
+            else verdictParts.push('prose complexity is well-suited for adult mystery fiction');
+            if (complexPct > 20) verdictParts.push(`${complexPct.toFixed(0)}% complex words is high — readers may slow down`);
+            if (dialoguePct < 15) verdictParts.push('low dialogue density — consider adding more spoken exchanges to vary rhythm');
+            else if (dialoguePct > 60) verdictParts.push('high dialogue density — ensure prose sections are anchoring the action');
+            if (ttr < 40) verdictParts.push('vocabulary diversity is low — some words may be overused');
+            else if (ttr > 70) verdictParts.push('vocabulary is highly varied — strong lexical range');
+
+            // Bar helper
+            const bar = (label, val, max, color, unit='') => `
+                <div class="read-bar-row">
+                    <div class="read-bar-label">${label}</div>
+                    <div class="read-bar-track">
+                        <div class="read-bar-fill" style="width:${Math.min(100,(val/max)*100).toFixed(1)}%;background:${color}"></div>
+                    </div>
+                    <div class="read-bar-val">${typeof val === 'number' ? val.toFixed(1) : val}${unit}</div>
+                </div>`;
+
+            document.getElementById('readability-results').innerHTML = `
+                <div class="read-verdict">
+                    <div class="read-verdict-label">EDITORIAL VERDICT</div>
+                    <div class="read-verdict-text">${verdictParts.map((p,i) => i===0 ? p.charAt(0).toUpperCase()+p.slice(1) : p).join('. ')}.</div>
+                </div>
+
+                <div class="readability-grid">
+                    <div class="read-metric">
+                        <div class="read-metric-label">FLESCH-KINCAID</div>
+                        <div class="read-metric-value ${gradeClass(fk)}">GR. ${fk.toFixed(1)}</div>
+                        <div class="read-metric-sub">${gradeLabel(fk)}</div>
+                    </div>
+                    <div class="read-metric">
+                        <div class="read-metric-label">GUNNING FOG</div>
+                        <div class="read-metric-value ${gradeClass(fog)}">${fog.toFixed(1)}</div>
+                        <div class="read-metric-sub">${fog <= 8 ? 'EASY' : fog <= 12 ? 'MODERATE' : 'COMPLEX'}</div>
+                    </div>
+                    <div class="read-metric">
+                        <div class="read-metric-label">AVG SENTENCE</div>
+                        <div class="read-metric-value ${avgSentLen > 25 ? 'read-grade-hard' : avgSentLen > 15 ? 'read-grade-mid' : 'read-grade-easy'}">${avgSentLen.toFixed(1)}</div>
+                        <div class="read-metric-sub">WORDS / SENTENCE</div>
+                    </div>
+                    <div class="read-metric">
+                        <div class="read-metric-label">VOCAB DIVERSITY</div>
+                        <div class="read-metric-value ${ttr > 60 ? 'read-grade-easy' : ttr > 40 ? 'read-grade-mid' : 'read-grade-hard'}">${ttr.toFixed(0)}%</div>
+                        <div class="read-metric-sub">TYPE-TOKEN RATIO</div>
+                    </div>
+                    <div class="read-metric">
+                        <div class="read-metric-label">COMPLEX WORDS</div>
+                        <div class="read-metric-value ${complexPct > 20 ? 'read-grade-hard' : complexPct > 12 ? 'read-grade-mid' : 'read-grade-easy'}">${complexPct.toFixed(1)}%</div>
+                        <div class="read-metric-sub">${complexWords.length} / ${wordCount} WORDS</div>
+                    </div>
+                    <div class="read-metric">
+                        <div class="read-metric-label">DIALOGUE DENSITY</div>
+                        <div class="read-metric-value ${gradeClass(10 - dialoguePct/10)}">${dialoguePct.toFixed(0)}%</div>
+                        <div class="read-metric-sub">OF SENTENCES</div>
+                    </div>
+                </div>
+
+                <div class="read-section">
+                    <div class="read-section-title">COMPLEXITY BREAKDOWN</div>
+                    ${bar('Avg sentence length', avgSentLen, 40, 'var(--amber)', ' words')}
+                    ${bar('Complex word ratio', complexPct, 40, 'var(--red-bright)', '%')}
+                    ${bar('Vocab diversity', ttr, 100, 'var(--green)', '%')}
+                    ${bar('Dialogue density', dialoguePct, 100, 'var(--steel-blue)', '%')}
+                    ${bar('Avg syllables/word', avgSyllables, 4, 'var(--amber)')}
+                </div>
+
+                <div class="read-section">
+                    <div class="read-section-title">DENSEST SENTENCES — CONSIDER SPLITTING</div>
+                    <div class="dense-sentences">
+                        ${sentWithIdx.map(({s, len}) => `
+                        <div class="dense-item">
+                            <div class="dense-item-meta">${len} WORDS</div>
+                            <div class="dense-item-text">"${s.slice(0,200)}${s.length > 200 ? '...' : ''}"</div>
+                        </div>`).join('')}
+                    </div>
+                </div>
+
+                <div class="read-section">
+                    <div class="read-section-title">COMPLEX VOCABULARY (3+ SYLLABLES)</div>
+                    <div class="vocab-words">
+                        ${complexUnique.map(w => `<span class="vocab-word complex">${w}</span>`).join('')}
+                    </div>
+                    <div style="font-family:var(--font-mono);font-size:0.72rem;color:#555;margin-top:1rem;">
+                        ${uniqueWords.size} UNIQUE WORDS TOTAL · ${wordCount} TOTAL WORDS · ${sentenceCount} SENTENCES
+                    </div>
+                </div>`;
+
+            document.getElementById('readability-results').style.display = 'block';
+            setTimeout(() => document.getElementById('readability-results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
         }
 
         // ── Init on load ──
