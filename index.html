@@ -119,8 +119,40 @@
         .history-entry-preview { font-size: 0.75rem; color: #777; margin-top: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .history-empty { font-family: var(--font-mono); font-size: 0.7rem; color: #444; margin-top: 8px; }
 
-        .settings-box {
-            margin-top: auto;
+        .stats-section-label {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: #555;
+            letter-spacing: 2px;
+            padding-top: 1rem;
+            border-top: 1px solid #2a2a2a;
+            margin-top: 0.5rem;
+        }
+        .stats-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 6px;
+        }
+        .stats-row-label {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: #555;
+        }
+        .stats-row-value {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--amber);
+            font-weight: 700;
+        }
+        .stats-total {
+            font-family: var(--font-mono);
+            font-size: 0.68rem;
+            color: #444;
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px dashed #2a2a2a;
+        }
             font-family: var(--font-mono);
             font-size: 0.75rem;
             color: #666;
@@ -433,6 +465,16 @@
 
             <div class="history-section-label">RECENT CASES</div>
             <div id="sidebar-history"></div>
+
+            <div class="stats-section-label">FIELD STATS</div>
+            <div id="sidebar-stats">
+                <div class="stats-row"><span class="stats-row-label">ANALYSES</span><span class="stats-row-value" id="stat-analyze">—</span></div>
+                <div class="stats-row"><span class="stats-row-label">COMPARISONS</span><span class="stats-row-value" id="stat-compare">—</span></div>
+                <div class="stats-row"><span class="stats-row-label">CHAR MAPS</span><span class="stats-row-value" id="stat-characters">—</span></div>
+                <div class="stats-row"><span class="stats-row-label">TENSION ARCS</span><span class="stats-row-value" id="stat-sentiment">—</span></div>
+                <div class="stats-row"><span class="stats-row-label">READABILITY</span><span class="stats-row-value" id="stat-readability">—</span></div>
+                <div class="stats-total">TOTAL VISITS: <span id="stat-visits">—</span></div>
+            </div>
 
             <div class="settings-box">
                 <input type="checkbox" id="audio-toggle">
@@ -841,6 +883,7 @@
 
                 // Save to history
                 saveToHistory(text, data);
+                trackEvent('analyze');
 
                 // Render
                 exhibitCounter = 1;
@@ -919,6 +962,7 @@
                 document.getElementById('compare-loading').style.display = 'none';
                 section.style.display = 'flex';
                 animateResults(section);
+                trackEvent('compare');
 
             } catch (err) {
                 document.getElementById('compare-loading').style.display = 'none';
@@ -1096,6 +1140,7 @@
             } catch (err) {
                 document.getElementById('characters-loading').style.display = 'none';
                 showError('characters-error', 'DOSSIER BUILD FAILED — ' + (err.message || 'Try again.'));
+                trackEvent('characters');
             } finally {
                 document.getElementById('characters-btn').disabled = false;
                 statusDot.classList.remove('active');
@@ -1313,6 +1358,7 @@
                 </div>`;
 
             document.getElementById('sentiment-chart-wrap').style.display = 'block';
+            trackEvent('sentiment');
             setTimeout(() => document.getElementById('sentiment-chart-wrap').scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
         }
 
@@ -1503,11 +1549,38 @@
                 </div>`;
 
             document.getElementById('readability-results').style.display = 'block';
+            trackEvent('readability');
             setTimeout(() => document.getElementById('readability-results').scrollIntoView({ behavior: 'smooth', block: 'start' }), 150);
+        }
+
+        // ── ANALYTICS ──
+        async function trackEvent(event) {
+            try {
+                await fetch('/api/analytics', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ event })
+                });
+            } catch (_) { /* never break the app */ }
+        }
+
+        async function loadStats() {
+            try {
+                const res = await fetch('/api/analytics');
+                const data = await res.json();
+                document.getElementById('stat-analyze').textContent     = data.analyze     || '0';
+                document.getElementById('stat-compare').textContent     = data.compare     || '0';
+                document.getElementById('stat-characters').textContent  = data.characters  || '0';
+                document.getElementById('stat-sentiment').textContent   = data.sentiment   || '0';
+                document.getElementById('stat-readability').textContent = data.readability || '0';
+                document.getElementById('stat-visits').textContent      = data.visits      || '0';
+            } catch (_) { /* silently fail */ }
         }
 
         // ── Init on load ──
         renderSidebarHistory();
+        trackEvent('visit');
+        loadStats();
     </script>
 </body>
 </html>
