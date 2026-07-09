@@ -13,7 +13,7 @@
             --surface-light: #242220;
             --text-main: #d4d4d4;
             --text-offwhite: #f5f3ee;
-            --amber: #c8860a;
+            --amber: #e8a020;
             --steel-blue: #4a7fa5;
             --crimson: #8b0000;
             --red-bright: #ff3333;
@@ -33,6 +33,7 @@
             flex-direction: column;
             overflow-x: hidden;
             position: relative;
+            padding-bottom: 28px;
         }
 
         body::before {
@@ -178,8 +179,8 @@
         h1 { font-family: var(--font-sans); font-weight: 600; letter-spacing: 4px; font-size: 1.5rem; color: var(--text-main); }
 
         .status-indicator { display: flex; align-items: center; gap: 0.75rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--steel-blue); }
-        .blink-dot { width: 8px; height: 8px; background-color: var(--red-bright); border-radius: 50%; box-shadow: 0 0 8px var(--red-bright); }
-        .blink-dot.active { animation: blink 1.5s infinite; }
+        .blink-dot { width: 8px; height: 8px; background-color: var(--red-bright); border-radius: 50%; box-shadow: 0 0 6px var(--red-bright); animation: blink 2.5s ease-in-out infinite; flex-shrink: 0; }
+        .blink-dot.active { animation: blink 0.8s ease-in-out infinite; box-shadow: 0 0 10px var(--red-bright); }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
 
         /* ── Views ── */
@@ -564,8 +565,6 @@
                 <div id="characters-error" class="error-state"></div>
                 <div id="character-results"></div>
             </div>
-        </main>
-    </div>
 
             <!-- ── VIEW: SENTIMENT ARC ── -->
             <div class="view" id="view-sentiment">
@@ -623,6 +622,11 @@
                 <div id="readability-error" class="error-state"></div>
                 <div id="readability-results" style="display:none; margin-top:2rem;"></div>
             </div>
+
+        </main>
+    </div>
+
+    <div class="ticker-wrap">
         <div class="ticker">PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • DO NOT DISTRIBUTE • PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • DO NOT DISTRIBUTE • PATTERN ZERO LAB • FORENSIC LITERARY ANALYSIS • CONFIDENTIAL • </div>
     </div>
 
