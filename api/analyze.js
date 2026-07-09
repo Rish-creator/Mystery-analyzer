@@ -1,87 +1,67 @@
-const VALID_EVENTS = ['analyze', 'compare', 'characters', 'sentiment', 'readability', 'visit'];
-
 export default async function handler(req, res) {
-  // Allow GET for stats, POST for tracking
-  if (req.method === 'GET') {
-    return getStats(res);
-  }
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { event } = req.body;
-
-  if (!event || !VALID_EVENTS.includes(event)) {
-    return res.status(400).json({ error: 'Invalid event' });
+  const { text } = req.body;
+  if (!text || text.trim().split(/\s+/).length < 50) {
+    return res.status(400).json({ error: 'Text too short.' });
   }
 
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
+  const systemPrompt = `You are a professional fiction editor specializing in mystery and thriller novels. Analyze the provided chapter excerpt and return ONLY a valid JSON object with this exact structure — no markdown, no explanation, just raw JSON:
 
-  if (!url || !token) {
-    // Silently succeed if not configured — won't break the app
-    return res.status(200).json({ ok: true });
-  }
-
-  try {
-    // Increment the counter for this event
-    // Also increment total
-    await fetch(`${url}/pipeline`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify([
-        ['INCR', `pzl:${event}`],
-        ['INCR', 'pzl:total']
-      ])
-    });
-
-    return res.status(200).json({ ok: true });
-  } catch (err) {
-    // Never let analytics break the main app
-    return res.status(200).json({ ok: true });
-  }
+{
+  "overall": "2-3 sentence overall assessment",
+  "scores": {
+    "plot": "Strong/Good/Fair/Weak",
+    "characters": "Strong/Good/Fair/Weak",
+    "tension": "Strong/Good/Fair/Weak",
+    "pacing": "Strong/Good/Fair/Weak"
+  },
+  "plot_holes": [
+    {"title": "short label", "detail": "specific explanation referencing the text"}
+  ],
+  "character_issues": [
+    {"title": "short label", "detail": "specific explanation"}
+  ],
+  "tension_suggestions": [
+    {"title": "short label", "detail": "specific actionable suggestion"}
+  ],
+  "pacing_notes": [
+    {"title": "short label", "detail": "specific observation"}
+  ],
+  "strengths": [
+    {"title": "short label", "detail": "specific strength, quote the text where possible"}
+  ]
 }
 
-async function getStats(res) {
-  const url = process.env.UPSTASH_REDIS_REST_URL;
-  const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-
-  if (!url || !token) {
-    return res.status(200).json(getEmptyStats());
-  }
+Each array should have 2-4 items. Always reference actual lines or scenes from the text.`;
 
   try {
-    const keys = ['pzl:total', 'pzl:analyze', 'pzl:compare', 'pzl:characters', 'pzl:sentiment', 'pzl:readability', 'pzl:visit'];
-
-    const response = await fetch(`${url}/pipeline`, {
+    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.GROQ_API_KEY}`
       },
-      body: JSON.stringify(keys.map(k => ['GET', k]))
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        max_tokens: 1500,
+        temperature: 0.4,
+        messages: [
+          { role: 'system', content: systemPrompt },
+          { role: 'user', content: text }
+        ]
+      })
     });
 
     const data = await response.json();
-    const values = data.map(r => parseInt(r.result || '0', 10) || 0);
+    const raw = data.choices?.[0]?.message?.content || '';
+    const clean = raw.replace(/```json|```/g, '').trim();
+    const result = JSON.parse(clean);
+    return res.status(200).json(result);
 
-    return res.status(200).json({
-      total:       values[0],
-      analyze:     values[1],
-      compare:     values[2],
-      characters:  values[3],
-      sentiment:   values[4],
-      readability: values[5],
-      visits:      values[6]
-    });
   } catch (err) {
-    return res.status(200).json(getEmptyStats());
+    return res.status(500).json({ error: err.message || 'Something went wrong.' });
   }
-}
-
-function getEmptyStats() {
-  return { total: 0, analyze: 0, compare: 0, characters: 0, sentiment: 0, readability: 0, visits: 0 };
 }
